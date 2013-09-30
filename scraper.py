@@ -26,25 +26,7 @@ def login():
     passwd_input.send_keys(password)
     passwd_input.send_keys(Keys.RETURN)
 
-def downloadAll(courses):
-    for course in courses:
-        try:
-            course_link = driver.find_element_by_link_text(course)
-            course_link.click()
-
-            header_links = driver.find_elements_by_class_name("accordion-header")
-            for link in header_links:
-                link.click()
-
-            video_links = driver.find_elements_by_link_text("WMP")
-            for link in video_links:
-                download(link)
-
-        except NoSuchElementException as e:
-            print 'The course "%s" is not found' % course
-            continue
-
-def download(link):
+def getVideoLink(link):
     time.sleep(3)
     link.click()
     time.sleep(3)
@@ -54,7 +36,30 @@ def download(link):
     video = video.replace("http", "mms").replace(" ", "%20")
     driver.close()
     driver.switch_to_window(windows[0])
-    os.system("mimms -c %s" % video)
+    return video
+
+def downloadAll(courses):
+    for course in courses:
+        try:
+            links = []
+            course_link = driver.find_element_by_link_text(course)
+            course_link.click()
+
+            header_links = driver.find_elements_by_class_name("accordion-header")
+            for link in header_links:
+                link.click()
+
+            video_links = driver.find_elements_by_link_text("WMP")
+            for link in video_links:
+                video_link = getVideoLink(link)
+                links.append(video_link)
+
+            for link in links:
+                os.system("mimms -c %s" % link)
+
+        except NoSuchElementException as e:
+            print 'The course "%s" is not found' % course
+            continue
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
