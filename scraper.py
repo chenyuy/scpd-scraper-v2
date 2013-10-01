@@ -67,11 +67,14 @@ def downloadAll(courses):
     print "Ready to download the videos..."
     for course in course_links:
         print 'Downloading videos for "%s"' % course
+        directory_path = os.path.join(".", course)
+        if not os.path.exists(directory_path):
+            os.mkdir(directory_path)
         for link in course_links[course]:
             video_name = link.split("/")[-1]
             video_name_parts = video_name.split("-")
             video_name = video_name_parts[1] + "_" + video_name_parts[0]
-            os.system('mimms -c "%s" "%s"' % (link, video_name))
+            os.system('mimms -c "%s" "%s/%s"' % (link, directory_path, video_name))
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
