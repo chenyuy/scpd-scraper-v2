@@ -39,6 +39,7 @@ def getVideoLink(link):
     return video
 
 def downloadAll(courses):
+    course_links = {}
     for course in courses:
         try:
             links = []
@@ -46,20 +47,33 @@ def downloadAll(courses):
             course_link.click()
 
             header_links = driver.find_elements_by_class_name("accordion-header")
-            for link in header_links:
-                link.click()
+            for header_link in header_links:
+                header_link.click()
+                time.sleep(2)
+                video_links = driver.find_elements_by_link_text("WMP")
+                for link in video_links:
+                    video_link = getVideoLink(link)
+                    links.append(video_link)
+                    print "Found link for %s: %s" % (course, video_link)
 
-            video_links = driver.find_elements_by_link_text("WMP")
-            for link in video_links:
-                video_link = getVideoLink(link)
-                links.append(video_link)
-
-            for link in links:
-                os.system("mimms -c %s" % link)
+            course_links[course] = links
+            driver.back()
 
         except NoSuchElementException as e:
             print 'The course "%s" is not found' % course
             continue
+    driver.close()
+
+    print "Ready to download the videos..."
+    for course in course_links:
+        print 'Downloading videos for "%s"' % course
+        for link in course_links[course]:
+            os.system('mimms -c "%s"' % link)
+        #directory = os.path.join("~", course)
+        #if not os.path.exists(directory):
+        #    os.makedirs(directory)
+        #for link in course_links[course]:
+        #    os.system('mimms -c "%s" "%s"' % (link, os.path.join(directory, link)))
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
