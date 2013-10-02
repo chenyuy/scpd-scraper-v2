@@ -26,6 +26,13 @@ def login():
     passwd_input.send_keys(password)
     passwd_input.send_keys(Keys.RETURN)
 
+    try:
+        code_input = driver.find_element_by_id("otp")
+        code_input.send_keys(raw_input("Enter the authentication code: "))
+        code_input.send_keys(Keys.RETURN)
+    except NoSuchElementException as e:
+        print "Two step authentication is not used."
+
 def getVideoLink(link):
     time.sleep(3)
     link.click()
