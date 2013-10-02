@@ -5,6 +5,7 @@ import time
 from getpass import getpass
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 
 driver = None
@@ -50,10 +51,9 @@ def login():
         print "Login succeeded."
 
 def getVideoLink(link):
-    time.sleep(3)
     link.click()
-    time.sleep(3)
-    windows = driver.window_handles
+    waiter = WebDriverWait(driver, 10)
+    windows = waiter.until(lambda driver: driver.window_handles if len(driver.window_handles) > 1 else False)
     driver.switch_to_window(windows[1])
     video = driver.find_element_by_tag_name("object").get_attribute("data")
     video = video.replace("http", "mms").replace(" ", "%20")
@@ -71,8 +71,9 @@ def downloadAll(courses):
 
             header_links = driver.find_elements_by_class_name("accordion-header")
             for header_link in header_links:
+                waiter = WebDriverWait(driver, 10)
                 header_link.click()
-                time.sleep(2)
+                time.sleep(1)
                 video_links = driver.find_elements_by_link_text("WMP")
                 for link in video_links:
                     video_link = getVideoLink(link)
@@ -101,7 +102,7 @@ def downloadAll(courses):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Error: TODO"
+        print "Usage: python scraper.py course_name1 course_name2 ..."
         sys.exit(1)
 
     login()
