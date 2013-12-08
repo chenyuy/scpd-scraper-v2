@@ -15,5 +15,6 @@ There are several requirements for the script:
 
 The program will prompt for your SuID and password. If two-step authentication is enabled for your account, it will also prompt for the authentication code. Watch the terminal for the prompt after you have authenticated yourself with your id and password.
 
+Note: For two-step authentication, currently the script only handles the case where you use some authenticator to get the code and enter them on the login page. If you are using SMS, it won't work.
 
 The script is inspired by [scpd-scraper](https://github.com/jkeesh/scpd-scraper).
