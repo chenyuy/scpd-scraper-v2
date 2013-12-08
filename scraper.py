@@ -36,6 +36,12 @@ def login():
         pass
 
     try:
+        send_sms = driver.find_element_by_name("send");
+        send_sms.click()
+    except NoSuchElementException as e:
+        pass
+
+    try:
         code_input = driver.find_element_by_id("otp")
         code_input.send_keys(raw_input("Enter the authentication code: "))
         code_input.send_keys(Keys.RETURN)
