@@ -96,9 +96,7 @@ def downloadAll(courses):
             os.mkdir(directory_path)
         for link in course_links[course]:
             video_name = link.split("/")[-1]
-            video_name_parts = video_name.split("-")
-            video_name = video_name_parts[1] + "_" + video_name_parts[0]
-            os.system('mimms -c "%s" "%s/%s"' % (link, directory_path, video_name))
+            os.system('mimms -r "%s" "%s/%s"' % (link, directory_path, video_name))
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -107,4 +105,3 @@ if __name__ == "__main__":
 
     login()
     downloadAll(sys.argv[1:])
-
